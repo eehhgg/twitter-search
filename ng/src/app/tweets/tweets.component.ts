@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TWEETS } from '../mock-tweets';
+import { TweetService } from '../tweet.service';
 import { Tweet } from '../tweet';
 
 @Component({
@@ -9,19 +9,34 @@ import { Tweet } from '../tweet';
 })
 export class TweetsComponent implements OnInit {
 
-  tweets = TWEETS;
+  query = '';
+  hasSearched = false;
+  isSearching = false;
+  tweets: Tweet[];
 
-  constructor() { }
+  constructor(private tweetService: TweetService) { }
 
-  ngOnInit() {
-    for (let tweet of this.tweets) {
-      tweet.created_at = this.timeSince(tweet.created_at);
-      tweet.popularity = tweet.retweet_count + tweet.favorite_count;
-    }
-    this.tweets.sort(function(a, b) { return b.popularity - a.popularity; });
+  ngOnInit() { }
+
+  getTweets(): void {
+    if (this.isSearching) { return; }
+    this.query = this.query.replace(/^\s+|\s+$/g, '');
+    if (!this.query.length) { return; }
+    this.isSearching = true;
+    this.hasSearched = true;
+    this.tweetService.getTweets(this.query).subscribe(tweets => {
+      for (let tweet of tweets) {
+        tweet.created_at = this.timeSince(tweet.created_at);
+      }
+      tweets.sort(function(a, b) {
+        return (b.retweet_count + b.favorite_count) - (a.retweet_count + a.favorite_count);
+      });
+      this.tweets = tweets;
+      this.isSearching = false;
+    });
   }
 
-  timeSince(dateStr : string) : string {
+  private timeSince(dateStr : string): string {
     let date = +new Date(dateStr);
     let now = +new Date();
     let seconds = Math.floor((now - date) / 1000);

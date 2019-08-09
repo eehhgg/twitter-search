@@ -23,7 +23,7 @@ class TweetsController extends AppController {
     $tweets = $this->getTweets($query);
     $this->set([
         'tweets' => $tweets,
-        '_serialize' => ['tweets']
+        '_serialize' => 'tweets'
     ]);
   }
 
@@ -50,8 +50,8 @@ class TweetsController extends AppController {
     $conf = Configure::read('Twitter');
     $connection = new TwitterOAuth( $conf['consumer_key'], $conf['consumer_secret'], $conf['access_token'], $conf['access_token_secret'] );
     $connection->setTimeouts(30, 30);
-    $nPerPage = 2;
-    $nPages = 3;
+    $nPerPage = 100;
+    $nPages = 10;
     $params = [
       'q' => $query,
       'result_type' => 'recent',

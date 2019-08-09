@@ -6,5 +6,4 @@ export class Tweet {
   'user_screen_name': string;
   'retweet_count': number;
   'favorite_count': number;
-  'popularity': number;
 }

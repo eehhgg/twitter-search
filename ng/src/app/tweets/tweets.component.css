@@ -1,4 +1,56 @@
 
+.main-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.main-wrapper.searched {
+  position: static;
+  height: auto;
+  margin: 50px 0;
+}
+
+form {
+  max-width: 400px;
+  margin: 30px auto 40px;
+  transition: margin .3s ease;
+}
+
 a {
   text-decoration: none;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+th.posted {
+  min-width: 120px;
+}
+
+.sm-show {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .md-hide {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 575px) {
+  .sm-show {
+    display: table-cell;
+  }
+  .sm-hide {
+    display: none;
+  }
 }

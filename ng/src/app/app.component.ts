@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Tweet } from './tweet';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +6,5 @@ import { Tweet } from './tweet';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  query = '';
+  
 }

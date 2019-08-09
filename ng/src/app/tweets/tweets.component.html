@@ -1,27 +1,51 @@
 
-<table class="table table-striped table-sm" *ngIf="tweets">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">User</th>
-      <th scope="col">Tweet</th>
-      <th scope="col">Retweets</th>
-      <th scope="col">Favourites</th>
-      <th scope="col">Popularity</th>
-      <th scope="col">Created</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let tweet of tweets">
-      <td><a href="https://twitter.com/{{ tweet.user_screen_name }}" class="text-info" target="_blank">
-        {{ tweet.user_screen_name }}
-      </a></td>
-      <td><a href="https://twitter.com/{{ tweet.user_screen_name }}/status/{{ tweet.id }}" class="text-info" target="_blank">
-        {{ tweet.text }}
-      </a></td>
-      <td>{{ tweet.retweet_count }}</td>
-      <td>{{ tweet.favorite_count }}</td>
-      <td>{{ tweet.retweet_count + tweet.favorite_count }}</td>
-      <td>{{ tweet.created_at }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="main-wrapper d-flex flex-column justify-content-center text-center" [class.searched]="hasSearched">
+  <div class="container">
+    <h2>Twitter Search</h2>
+
+    <form (submit)="getTweets()">
+      <div class="input-group mb-3">
+        <input [(ngModel)]="query" name="q" type="text" class="form-control" placeholder="Enter a search term" aria-label="Enter a search term" aria-describedby="button-search" maxlength="500" required>
+        <div class="input-group-append">
+          <button class="btn btn-info" type="submit" id="button-search">Search</button>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="hasSearched && !isSearching && (!tweets || !tweets.length)">No results</div>
+
+    <table class="table table-striped table-sm" *ngIf="tweets && tweets.length">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col" class="sm-hide">User</th>
+          <th scope="col">Tweet</th>
+          <th scope="col" class="md-hide">Retweets</th>
+          <th scope="col" class="md-hide">Favourites</th>
+          <th scope="col" class="sm-hide">Popularity</th>
+          <th scope="col" class="sm-hide posted">Posted</th>
+          <th scope="col" class="sm-show">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tweet of tweets">
+          <td class="sm-hide"><a href="https://twitter.com/{{ tweet.user_screen_name }}" class="text-info" target="_blank">
+            {{ tweet.user_screen_name }}
+          </a></td>
+          <td><a href="https://twitter.com/{{ tweet.user_screen_name }}/status/{{ tweet.id }}" class="text-info" target="_blank">
+            {{ tweet.text }}
+          </a></td>
+          <td class="md-hide">{{ tweet.retweet_count }}</td>
+          <td class="md-hide">{{ tweet.favorite_count }}</td>
+          <td class="sm-hide">{{ tweet.retweet_count + tweet.favorite_count }}</td>
+          <td class="sm-hide">{{ tweet.created_at }} ago</td>
+          <td class="sm-show">
+            <p>By <a href="https://twitter.com/{{ tweet.user_screen_name }}" class="text-info" target="_blank">{{ tweet.user_screen_name }}</a></p>
+            <p>{{ tweet.created_at }} ago</p>
+            <p>Popularity: {{ tweet.retweet_count + tweet.favorite_count }}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
