@@ -67,3 +67,10 @@ th:last-child, td:last-child {
     display: none;
   }
 }
+
+@media (max-width: 390px) {
+  th, td {
+    min-width: 100px;
+    max-width: 100px;
+  }
+}
