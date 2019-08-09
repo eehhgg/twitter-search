@@ -1,51 +1,25 @@
-# CakePHP Application Skeleton
+# Short Twitter project
 
-[![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 3.x.
-
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+* Given a search term (in a Google-like search box), queries Twitter's API to find the 1,000 most recent posts with this keyword.
+* The results are displayed in descending order of Retweets + Favourites.
+* Clicking on the text of a post opens the original post on twitter.com.
+* Clicking on a username opens their profile on twitter.com.
 
 ## Installation
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+1. Download or clone this repository.
+2. Run `composer install` at the project root folder.
+3. Copy `config/app.default.php` as `config/app.php`. Then fill in the salt (line 79) and Twitter credentials (lines 396-399).
 
-If Composer is installed globally, run
-
-```bash
-composer create-project --prefer-dist cakephp/app
-```
-
-In case you want to use a custom app dir name (e.g. `/myapp/`):
-
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
-
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+You can now either use your machine's webserver to open the project, or start up the built-in webserver with:
 
 ```bash
 bin/cake server -p 8765
 ```
 
-Then visit `http://localhost:8765` to see the welcome page.
+And then open `http://localhost:8765`.
 
-## Update
+## References
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
-
-## Configuration
-
-Read and edit `config/app.php` and setup the `'Datasources'` and any other
-configuration relevant for your application.
-
-## Layout
-
-The app skeleton uses a subset of [Foundation](http://foundation.zurb.com/) (v5) CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+* [CakePHP 3.8 installation](https://book.cakephp.org/3.0/en/installation.html)
+* [Twitter Standard Search API](https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets.html)

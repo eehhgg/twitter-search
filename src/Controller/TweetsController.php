@@ -7,13 +7,19 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 class TweetsController extends AppController {
 
+  /**
+   * Initialize Controller
+   */
   public function initialize() {
     parent::initialize();
     $this->loadComponent('RequestHandler');
   }
 
-  public function index($query) {
-    $query = $this->sanitizeQuery($query);
+  /**
+   * API endpoint that returns recent tweets that contain a given search query.
+   */
+  public function index() {
+    $query = $this->sanitizeQuery( $this->request->getQuery('q') );
     $tweets = $this->getTweets($query);
     $this->set([
         'tweets' => $tweets,
@@ -21,22 +27,127 @@ class TweetsController extends AppController {
     ]);
   }
 
-  private function sanitizeQuery($q) {
-    $q = mb_substr($q, 0, 500);
-    return urlencode($q);
+  /* Private functions */
+
+  /**
+   * Sanitizes a search query so it complies with Twitter specifications.
+   * @param string $query
+   */
+  private function sanitizeQuery($query) {
+    $query = mb_substr( trim($query), 0, 500 );
+    return urlencode($query);
   }
 
+  /**
+   * Uses the Twitter API to get 1k recent tweets that contain a given search query.
+   * @param string $query
+   */
   private function getTweets($query) {
+    if ( empty($query) ) {
+      $this->saveLog('Empty query');
+      return null;
+    }
     $conf = Configure::read('Twitter');
-    $connection = new TwitterOAuth($conf['consumer_key'], $conf['consumer_secret'], $conf['access_token'], $conf['access_token_secret']);
-    $tweets = $connection->get('search/tweets', [
+    $connection = new TwitterOAuth( $conf['consumer_key'], $conf['consumer_secret'], $conf['access_token'], $conf['access_token_secret'] );
+    $connection->setTimeouts(30, 30);
+    $nPerPage = 2;
+    $nPages = 3;
+    $params = [
       'q' => $query,
       'result_type' => 'recent',
-      'count' => 100,
-      //'max_id' => ,
-      //'since_id' => 
-    ]);
+      'count' => $nPerPage,
+      'tweet_mode' => 'extended'
+    ];
+    $tweets = [];
+
+    for ($i = 1; $i <= $nPages; $i++) {
+      // get tweets
+      $search = $connection->get('search/tweets', $params);
+      if ( $connection->getLastHttpCode() != 200
+        || empty($search->statuses)
+        || empty($search->search_metadata->max_id_str) ) {
+        $this->writeLog( 'Error response: ' . $connection->getLastHttpCode() );
+        $this->writeLog($search);
+        break;
+      }
+      $nextTweets = $this->formatTweets($search->statuses);
+      if (!$nextTweets) { break; }
+      $tweets = array_merge($tweets, $nextTweets);
+      // update max_id parameter
+      $maxIdStr = $this->decStrNum( $nextTweets[count($nextTweets) - 1]['id'] );
+      if (!$maxIdStr) {
+        $this->writeLog('Invalid maxIdStr');
+        break;
+      }
+      $params['max_id'] = $maxIdStr;
+    }
+
     return $tweets;
+  }
+
+  /**
+   * Selects the necessary fields from an array of tweets.
+   * @param array $tweets
+   */
+  private function formatTweets($tweets) {
+    if ( empty($tweets) || !is_array($tweets) ) {
+      $this->writeLog('Empty tweets');
+      $this->writeLog($tweets);
+      return null;
+    }
+    $fTweets = [];
+    foreach ($tweets as $t) {
+
+      // validate tweet
+      if ( !isset( $t->created_at, $t->id_str, $t->full_text, $t->user,
+        $t->user->screen_name, $t->retweet_count, $t->favorite_count ) ) {
+        $this->writeLog('Missing tweet field');
+        $this->writeLog($t);
+        continue;
+      }
+      // get fields
+      $fTweets[] = [
+        'created_at' => $t->created_at,
+        'id' => $t->id_str,
+        'text' => $t->full_text,
+        'user_screen_name' => $t->user->screen_name,
+        'retweet_count' => $t->retweet_count,
+        'favorite_count' => $t->favorite_count
+      ];
+
+    }
+    return $fTweets;
+  }
+
+  /**
+   * Decreases by one a string that represents a positive integer.
+   * @param string $n
+   */
+  private function decStrNum($n) {
+    $n = trim((string) $n);
+    if ( ((int) $n == 0) || !preg_match('/\d+/', $n) ) { return null; }
+    $result = $n;
+    $len = strlen($n);
+    $i = $len - 1;
+    $completed = false;
+    while ($i > -1) {
+      if ($n[$i] === "0") {
+        $result[$i] = "9";
+        $i--;
+      } else {
+        $result[$i] = ((int) $n[$i]) - 1;
+        return $result;
+      }
+    }
+    return $result;
+  }
+
+  /**
+   * Writes an object to a log file.
+   * @param mixed $obj
+   */
+  private function writeLog($obj) {
+    $this->log($obj, 'debug');
   }
 
 }
