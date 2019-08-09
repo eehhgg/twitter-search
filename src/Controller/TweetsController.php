@@ -44,7 +44,7 @@ class TweetsController extends AppController {
    */
   private function getTweets($query) {
     if ( empty($query) ) {
-      $this->saveLog('Empty query');
+      $this->writeLog('Empty query');
       return null;
     }
     $conf = Configure::read('Twitter');

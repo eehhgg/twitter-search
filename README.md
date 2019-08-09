@@ -27,8 +27,9 @@ And then open `http://localhost:8765`.
 3. Upload all files to your server. The `ng` folder can be ommited, because the repository already contains the compiled Angular application in the `webroot` folder.
 4. Fix file and folder permissions as necessary.
 5. Follow [these instructions](https://book.cakephp.org/3.0/en/installation.html#i-can-t-use-url-rewriting) to disable URL rewriting on CakePHP.
-6. Update the base URL as necessary in `webroot/index.html:6`.
-7. Update the `tweetsURL` variable as necessary in the two `webroot/main-es...js` files.
+6. Replace `src/Controller/TweetsController.php:24-27` with `exit(json_encode($tweets));`.
+7. Update the base URL as necessary in `webroot/index.html:6`.
+8. Update the `tweetsURL` variable as necessary in the two `webroot/main-es...js` files.
 
 ## References
 
