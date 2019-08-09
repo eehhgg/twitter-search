@@ -7,9 +7,10 @@
 
 ## Installation
 
-1. Download or clone this repository.
-2. Run `composer install` at the project root folder.
+1. Clone this repository.
+2. Run `composer install` and `npm install` at the project root folder.
 3. Copy `config/app.default.php` as `config/app.php`. Then fill in the salt (line 79) and Twitter credentials (lines 396-399).
+4. Update the base URL as necessary in `webroot/index.html:6`.
 
 You can now either use your machine's webserver to open the project, or start up the built-in webserver with:
 
@@ -18,6 +19,16 @@ bin/cake server -p 8765
 ```
 
 And then open `http://localhost:8765`.
+
+## Installation with no SSH and no URL Rewritting
+
+1. Download this repository.
+2. Run `composer install` and `npm install` at the project root folder.
+3. Upload all files to your server. The `ng` folder can be ommited, because the repository already contains the compiled Angular application in the `webroot` folder.
+4. Fix file and folder permissions as necessary.
+5. Follow [these instructions](https://book.cakephp.org/3.0/en/installation.html#i-can-t-use-url-rewriting) to disable URL rewriting on CakePHP.
+6. Update the base URL as necessary in `webroot/index.html:6`.
+7. Update the `tweetsURL` variable as necessary in the two `webroot/main-es...js` files.
 
 ## References
 
