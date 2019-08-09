@@ -25,7 +25,20 @@ p {
   margin-bottom: 10px;
 }
 
-th.posted {
+th, td {
+  min-width: 100px;
+  word-break: break-all;
+}
+
+th.posted, td.posted {
+  min-width: 120px;
+}
+
+th:first-child, td:first-child {
+  min-width: 50px;
+}
+
+th:last-child, td:last-child {
   min-width: 120px;
 }
 

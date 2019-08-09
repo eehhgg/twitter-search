@@ -20,7 +20,7 @@ export const TWEETS: Tweet[] = [
   {
     "created_at": "Thu Aug 08 23:20:54 +0000 2019",
     "id": "1159605433725665280",
-    "text": "#KeyHole  vol 57 : James Black",
+    "text": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
     "user_screen_name": "Detective_Cona1",
     "retweet_count": 83,
     "favorite_count": 7

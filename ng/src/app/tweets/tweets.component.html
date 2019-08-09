@@ -17,6 +17,7 @@
     <table class="table table-striped table-sm" *ngIf="tweets && tweets.length">
       <thead class="thead-dark">
         <tr>
+          <th scope="col">#</th>
           <th scope="col" class="sm-hide">User</th>
           <th scope="col">Tweet</th>
           <th scope="col" class="md-hide">Retweets</th>
@@ -27,7 +28,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let tweet of tweets">
+        <tr *ngFor="let tweet of tweets; let i = index">
+          <td>{{ i + 1 }}</td>
           <td class="sm-hide"><a href="https://twitter.com/{{ tweet.user_screen_name }}" class="text-info" target="_blank">
             {{ tweet.user_screen_name }}
           </a></td>
@@ -37,7 +39,7 @@
           <td class="md-hide">{{ tweet.retweet_count }}</td>
           <td class="md-hide">{{ tweet.favorite_count }}</td>
           <td class="sm-hide">{{ tweet.retweet_count + tweet.favorite_count }}</td>
-          <td class="sm-hide">{{ tweet.created_at }} ago</td>
+          <td class="sm-hide posted">{{ tweet.created_at }} ago</td>
           <td class="sm-show">
             <p>By <a href="https://twitter.com/{{ tweet.user_screen_name }}" class="text-info" target="_blank">{{ tweet.user_screen_name }}</a></p>
             <p>{{ tweet.created_at }} ago</p>
