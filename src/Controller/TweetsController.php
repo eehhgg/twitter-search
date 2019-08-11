@@ -34,8 +34,13 @@ class TweetsController extends AppController {
    * @param string $query
    */
   private function sanitizeQuery($query) {
-    $query = mb_substr( trim($query), 0, 500 );
-    return urlencode($query);
+    $query = trim($query);
+    // trim to 500 characters, without breaking the last 1-byte encoded character (like %3D)
+    if ( mb_strlen($query) <= 500 ) { return $query; }
+    if ($query[498] === '%') { $query = mb_substr($query, 0, 498); }
+    elseif ($query[499] === '%') { $query = mb_substr($query, 0, 499); }
+    else { $query = mb_substr($query, 0, 500); }
+    return $query;
   }
 
   /**
@@ -45,7 +50,7 @@ class TweetsController extends AppController {
   private function getTweets($query) {
     if ( empty($query) ) {
       $this->writeLog('Empty query');
-      return null;
+      return [];
     }
     $conf = Configure::read('Twitter');
     $connection = new TwitterOAuth( $conf['consumer_key'], $conf['consumer_secret'], $conf['access_token'], $conf['access_token_secret'] );
@@ -74,9 +79,10 @@ class TweetsController extends AppController {
       if (!$nextTweets) { break; }
       $tweets = array_merge($tweets, $nextTweets);
       // update max_id parameter
-      $maxIdStr = $this->decStrNum( $nextTweets[count($nextTweets) - 1]['id'] );
+      $lastIdStr = $nextTweets[count($nextTweets) - 1]['id'];
+      $maxIdStr = $this->decStrNum($lastIdStr);
       if (!$maxIdStr) {
-        $this->writeLog('Invalid maxIdStr');
+        $this->writeLog( 'Invalid maxIdStr: ' . $maxIdStr . ' for ' . $lastIdStr );
         break;
       }
       $params['max_id'] = $maxIdStr;
@@ -109,8 +115,8 @@ class TweetsController extends AppController {
       $fTweets[] = [
         'created_at' => $t->created_at,
         'id' => $t->id_str,
-        'text' => $t->full_text,
-        'user_screen_name' => $t->user->screen_name,
+        'text' => html_entity_decode($t->full_text, ENT_HTML5),
+        'user_screen_name' => html_entity_decode($t->user->screen_name, ENT_HTML5),
         'retweet_count' => $t->retweet_count,
         'favorite_count' => $t->favorite_count
       ];

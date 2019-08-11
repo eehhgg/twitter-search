@@ -11,6 +11,7 @@
 2. Run `composer install` and `npm install` at the project root folder.
 3. Copy `config/app.default.php` as `config/app.php`. Then fill in the salt (line 79) and Twitter credentials (lines 396-399).
 4. Update the base URL as necessary in `webroot/index.html:6`.
+5. Update the `tweetsURL` variable as necessary in the two `webroot/main-es...js` files.
 
 You can now either use your machine's webserver to open the project, or start up the built-in webserver with:
 

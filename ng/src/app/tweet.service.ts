@@ -16,7 +16,8 @@ export class TweetService {
 
   getTweets(query: string): Observable<Tweet[]> {
     // return of(TWEETS);
-    return this.http.get<Tweet[]>( this.tweetsUrl +'?q='+ query ).pipe(
+    let url = this.tweetsUrl +'?q='+ encodeURIComponent(query);
+    return this.http.get<Tweet[]>(url).pipe(
       catchError((error: any) => {
         console.error(error);
         return of( [] as Tweet[] );
